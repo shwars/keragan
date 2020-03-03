@@ -7,7 +7,7 @@ import keragan
 if __name__ == '__main__':
     print("KeraGAN Trainer, version {}".format(keragan.__version__))
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="KeraGAN Trainer")
 
     parser.add_argument("path",help="Directory with images to train on")
     #parser.add_argument("--size",help="Image size to use", default=512, type=int)

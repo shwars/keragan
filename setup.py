@@ -6,11 +6,14 @@ import keragan
 with open('README.md') as readme_file:
     readme = readme_file.read()
     
+with open('requirements.txt') as req_file:
+    req = req_file.readlines()
+
 setuptools.setup(
     name='keragan',
     packages=setuptools.find_packages(),
     version=keragan.__version__,
-    install_requires=['keras','imutils','opencv-python','matplotlib'],
+    install_requires=req,
     description='Keras GAN Library',
     author='Dmitri Soshnikov',
     author_email='dmitri@soshnikov.com',
