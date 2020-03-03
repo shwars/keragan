@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import setuptools
-import keragan
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -9,10 +8,14 @@ with open('README.md') as readme_file:
 with open('requirements.txt') as req_file:
     req = req_file.readlines()
 
+with open('keragan/__init__.py') as py_file:
+    v = next(filter(lambda x: x.startswith('__version__'),py_file.readlines()))
+    version = v.split(' = ')[1].strip()[1:-1]
+
 setuptools.setup(
     name='keragan',
     packages=setuptools.find_packages(),
-    version=keragan.__version__,
+    version=version,
     install_requires=req,
     description='Keras GAN Library',
     author='Dmitri Soshnikov',
