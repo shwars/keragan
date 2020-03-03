@@ -97,7 +97,7 @@ class GAN():
             gen_img = self.generator.predict(s)
             confidence = self.discriminator.predict(gen_img)
             # Rescale image to 0 - 255
-            gen_img = (0.5 * gen_img[0] + 0.5)*255
+            gen_img = ((0.5 * gen_img[0] + 0.5)*255).astype(np.uint8)
             res.append((gen_img,confidence))
         return res
 
