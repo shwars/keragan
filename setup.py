@@ -10,7 +10,7 @@ setuptools.setup(
     name='keragan',
     packages=setuptools.find_packages(),
     version=keragan.__version__,
-    install_requires=['keras'],
+    install_requires=['keras','imutils','opencv-python','matplotlib'],
     description='Keras GAN Library',
     author='Dmitri Soshnikov',
     author_email='dmitri@soshnikov.com',

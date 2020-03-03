@@ -6,7 +6,7 @@ import cv2
 import glob
 import tqdm
 import numpy as np
-from .utils import show_images
+from .utils import show_images, crop_resize
 
 class ImageDataset():
 
@@ -61,7 +61,7 @@ class ImageDataset():
                     print("Image {} too skew - skipping")
                 else:
                     if self.crop:
-                        img = cv2.resize(img,(self.width, self.height)) # TODO
+                        img = crop_resize(img,self.width, self.height)
                     else:
                         img = cv2.resize(img,(self.width, self.height))
                     X_train.append(img)
