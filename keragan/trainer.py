@@ -2,7 +2,8 @@
 
 import argparse
 import keragan
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     print("KeraGAN Trainer, version {}".format(keragan.__version__))
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     parser.add_argument("--ignore_smaller",help="Ignore images smaller than required size",action='store_const',default=False,const=True)
     parser.add_argument("--crop",help="Crop images to desired aspect ratio",action='store_const',default=False,const=True)
     parser.add_argument("--epochs",help="Number of epochs to train",type=int,default=100)
+    parser.add_argument("--visual_inspection_interval",help="Number of epochs between visual inspection",type=int,default=None)
 
     args = parser.parse_args()
 
@@ -39,4 +41,13 @@ if __name__ == '__main__':
         imsrc.sample_images()
 
     train = keragan.GANTrainer(image_dataset=imsrc,gan=gan,args=args)
-    train.train()
+    
+    def callbk(tr):
+        if args.visual_inspection_interval and tr.gan.epoch % args.visual_inspection_interval == 0:
+            res = tr.gan.sample_images(n=2)
+            fig,ax = plt.subplots(1,len(res))
+            for i,v in enumerate(res):
+                ax[i].imshow(v[0])
+            plt.show()
+
+    train.train(callbk)

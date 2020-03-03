@@ -4,6 +4,7 @@ import os
 import keras
 import cv2
 import glob
+import numpy as np 
 
 class GAN():
 
@@ -90,12 +91,20 @@ class GAN():
 
     def sample_images(self,noise_vector=None,n=10):
         if noise_vector is None:
-            noise_vector = [ np.random.normal(0, 1, (1, self.latent_dim)) for _ in range(n)]
+            noise_vector = np.random.normal(0, 1, (n, 1, self.latent_dim))
+        res = []
         for i,s in enumerate(noise_vector):
             gen_img = self.generator.predict(s)
             confidence = self.discriminator.predict(gen_img)
             # Rescale image to 0 - 255
             gen_img = (0.5 * gen_img[0] + 0.5)*255
+            res.append((gen_img,confidence))
+        return res
+
+    def write_sample_images(self,noise_vector=None,n=10):
+        res = self.sample_images(noise_vector=noise_vector,n=n)
+        for i,v in enumerate(res):
+            gen_img,confidence = v
             cv2.imwrite(os.path.join(self.samples_path,'img_%d_%d_%f.png'%(i,self.epoch, confidence)), gen_img)
     
 class DCGAN(GAN):

@@ -23,7 +23,7 @@ class GANTrainer():
         if self.gan.height!=self.data.height or self.gan.width!=self.data.width:
             raise "Image size of GAN and ImageDataset should be the same"
 
-    def train(self):
+    def train(self,callback=None):
         # ones = label for real images
         # zeros = label for fake images
         ones = np.ones((self.batch_size, 1)) 
@@ -31,7 +31,7 @@ class GANTrainer():
 
         # create some noise to track AI's progression
         if self.no_samples:
-            self.noise_pred = [ np.random.normal(0, 1, (1, self.gan.latent_dim)) for _ in range(self.no_samples)]
+            self.noise_pred = np.random.normal(0, 1, (self.no_samples, 1, self.gan.latent_dim))
 
         for ep in range(self.epochs):
 
@@ -56,10 +56,13 @@ class GANTrainer():
 
             if ep % self.save_img_interval == 0 and self.no_samples:
                 print("Saving images...", end='')
-                self.gan.sample_images(self.noise_pred)
+                self.gan.write_sample_images(self.noise_pred)
                 print("done")
             
             if ep % self.save_interval == 0:
                 self.gan.save()
             
+            if callback:
+                callback(self)
+
             self.gan.epoch+=1
