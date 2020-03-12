@@ -52,7 +52,7 @@ class ImageDataset():
 
         n = 0
         for i in tqdm.tqdm(dos):
-            #try:
+            try:
                 img = cv2.imread(i)
                 asp = img.shape[0]/img.shape[1]
                 if self.ignore_smaller and (img.shape[0]<self.height or img.shape[1]<self.width):
@@ -68,8 +68,8 @@ class ImageDataset():
                     n+=1
                     if self.limit is not None and n>self.limit:
                         break
-            #except:
-            #    print("Error loading {} - skipping".format(i))
+            except:
+                print("Error loading {} - skipping".format(i))
                 
 
         X_train = np.array(X_train)

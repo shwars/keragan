@@ -8,12 +8,13 @@ import numpy as np
 
 class GAN():
 
-    def __init__(self,width,height,model_path=None,samples_path=None,optimizer=None,latent_dim=None):
+    def __init__(self,width,height,model_path=None,samples_path=None,optimizer=None,lr=None,latent_dim=None):
         self.width = width
         self.height = height
         self.channels = 3
         self.img_shape = (self.height, self.width, self.channels)
         self.model_path = model_path
+        self.lr = lr
         self.optimizer = optimizer
         self.latent_dim = latent_dim
         self.samples_path = samples_path
@@ -28,6 +29,7 @@ class GAN():
         self.optimizer = args.optimizer
         self.latent_dim = args.latent_dim
         self.samples_path = args.samples_path
+        self.lr = args.lr
         self.init()
 
     def __figure_epoch(self):
@@ -43,7 +45,9 @@ class GAN():
             return mx
 
     def init(self):
-        self.optimizer = keras.optimizers.Adam(0.005) if self.optimizer is None else self.optimizer
+        if self.lr is None and self.optimizer is None:
+            self.lr = 0.001
+        self.optimizer = keras.optimizers.Adam(lr=self.lr, beta_1=0.5, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False) if self.optimizer is None else self.optimizer
 
         if self.model_path:
             os.makedirs(self.model_path,exist_ok=True)
@@ -62,8 +66,8 @@ class GAN():
             self.generator = self.create_generator()
             self.epoch = 0
 
-        self.discriminator.trainable = False
         self.discriminator.compile(loss='binary_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
+        self.discriminator.trainable = False
         
         z = keras.models.Input(shape=(self.latent_dim,))
         img = self.generator(z)
@@ -113,19 +117,20 @@ class DCGAN(GAN):
         super().__init__(*args,**kwargs)
 
     def create_generator(self):
+        size = self.width
         model = keras.models.Sequential()
+        model.add(keras.layers.Dense(8 * 8 * 2 * size, activation="relu", input_dim=self.latent_dim))
+        model.add(keras.layers.Reshape((8, 8, 2 * size)))
 
-        model.add(keras.layers.Dense(8 * 8 * 512, activation="relu", input_dim=self.latent_dim))
-        model.add(keras.layers.Reshape((8, 8, 512)))
-
-        for x in [512,256,128,64,32,16,8]:
-            model.add(keras.layers.Conv2D(x, kernel_size=(3,3), padding="same"))
-            model.add(keras.layers.Activation("relu"))
+        x = size
+        while x>=16:
+            model.add(keras.layers.UpSampling2D())
+            model.add(keras.layers.Conv2D(x, kernel_size=(3,3), strides=1, padding="same"))
             model.add(keras.layers.BatchNormalization(momentum=0.8))
-            if x!=8:
-                model.add(keras.layers.UpSampling2D())
+            model.add(keras.layers.Activation("relu"))
+            x=x//2
 
-        model.add(keras.layers.Conv2D(self.channels, kernel_size=(1,1), padding="same"))
+        model.add(keras.layers.Conv2D(self.channels, kernel_size=3, padding="same"))
         model.add(keras.layers.Activation("tanh"))
 
         noise = keras.models.Input(shape=(self.latent_dim,))
@@ -138,16 +143,18 @@ class DCGAN(GAN):
         
         model = keras.models.Sequential()
 
-        for i,x in enumerate([32,64,128,256]):
+        i,x = 0,32
+        while x<=2*self.width:
             if i==0:
-                model.add(keras.layers.Conv2D(x, kernel_size=3, strides=2, input_shape=self.img_shape, padding="same"))
+                model.add(keras.layers.Conv2D(x, kernel_size=3, strides=1, input_shape=self.img_shape, padding="same"))
             else:
-                model.add(keras.layers.Conv2D(x, kernel_size=3, strides=2, padding="same"))
-
+                model.add(keras.layers.Conv2D(x, kernel_size=3, strides=1, padding="same"))
+            model.add(keras.layers.AveragePooling2D())
             model.add(keras.layers.BatchNormalization(momentum=0.8))
             model.add(keras.layers.LeakyReLU(alpha=0.2))
-            model.add(keras.layers.AveragePooling2D())
-            model.add(keras.layers.Dropout(0.2))
+            model.add(keras.layers.Dropout(0.3))
+            i+=1
+            x*=2
 
         model.add(keras.layers.Flatten())
         model.add(keras.layers.Dense(1, activation='sigmoid'))
@@ -156,5 +163,4 @@ class DCGAN(GAN):
         validity = model(img)
 
         return keras.models.Model(img, validity)
-
     
