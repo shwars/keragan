@@ -32,6 +32,9 @@ class GAN():
         self.lr = args.lr
         self.init()
 
+    def __init__(self):
+        pass
+
     def __figure_epoch(self):
         mx = -1
         for fn in glob.glob(os.path.join(self.model_path,'dis_*.h5')):
@@ -76,6 +79,18 @@ class GAN():
         self.combined = keras.models.Model(z, valid) 
         self.combined.compile(loss='binary_crossentropy', optimizer=self.optimizer)
 
+    @staticmethod
+    def create_from_generator_model(model):
+        gan = GAN()
+        gan.generator = model
+        gan.discriminator = None
+        gan.latent_dim = model.layers[0].input.shape[1].value
+        return gan
+
+    @staticmethod
+    def create_from_generator_file(file):
+        return GAN.create_from_generator_model(keras.models.load_model(file))
+
     def create_generator(self):
         raise "Abstract GAN Class cannot be instantiated"
 
@@ -99,7 +114,7 @@ class GAN():
         res = []
         for i,s in enumerate(noise_vector):
             gen_img = self.generator.predict(s)
-            confidence = self.discriminator.predict(gen_img)
+            confidence = self.discriminator.predict(gen_img) if self.discriminator is not None else 0
             # Rescale image to 0 - 255
             gen_img = ((0.5 * gen_img[0] + 0.5)*255).astype(np.uint8)
             res.append((gen_img,confidence))

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from imutils import resize
 import cv2
+import os
 
 def show_images(images, cols = 1, titles = None):
     """
@@ -26,6 +27,25 @@ def show_images(images, cols = 1, titles = None):
     fig.set_size_inches(np.array(fig.get_size_inches()) * n_images)
     plt.tight_layout()
     plt.show()
+
+# imread that supports unicode
+def imread(fn):
+    try:
+        with open(fn, "rb") as f:
+            chunk = f.read()
+        chunk_arr = np.frombuffer(chunk, dtype=np.uint8)
+        return cv2.imdecode(chunk_arr, cv2.IMREAD_UNCHANGED)
+    except:
+        return None
+
+# imwrite that supports unicode
+def imwrite(fn,img):
+    ext = os.path.splitext(fn)[1]
+    is_success, im_buf_arr = cv2.imencode(ext,img)
+    if is_success:
+        im_buf_arr.tofile(fn)
+    return is_success
+
 
 # code is adopted from https://medium.com/@Rakesh.thoppaen/image-preprocessing-without-changing-the-aspect-ratio-of-image-59c0afed70cb
 def crop_resize(image,width,height,inter=cv2.INTER_AREA):
