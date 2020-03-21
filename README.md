@@ -11,6 +11,14 @@ The simplest way to install is:
 pip install keragan
 ```
 
+### Some Images produced by keragan
+
+Images were trained on [WikiArt.org](http://wikiart.org) dataset taken from [here](https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%20Dataset/README.md).
+
+|![Minimalistic Landscape 1](images/min_landscape_1.jpg)|![Spring Dawn](images/spring_dawn.jpg)|![Still Water 2](images/still_water_2.jpg)|
+| *Minimalistic Landcape*, 2020 | *Spring Dawn*, 2020 | *Water Still 2*, 2020 |
+|---|---|---
+
 ### Training GAN from the Command-Line
 
 To start training, you can use the following command-line:
