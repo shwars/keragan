@@ -7,7 +7,7 @@ This library provides some simple infrastructure to define and train Generative 
 ### Installation
 
 The simplest way to install is:
-```python
+```bash
 pip install keragan
 ```
 
@@ -16,13 +16,14 @@ pip install keragan
 Images were trained on [WikiArt.org](http://wikiart.org) dataset taken from [here](https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%20Dataset/README.md).
 
 |![Minimalistic Landscape 1](images/min_landscape_1.jpg)|![Spring Dawn](images/spring_dawn.jpg)|![Still Water 2](images/still_water_2.jpg)|
+|---|---|---
 | *Minimalistic Landcape*, 2020 | *Spring Dawn*, 2020 | *Water Still 2*, 2020 |
 |---|---|---
 
 ### Training GAN from the Command-Line
 
 To start training, you can use the following command-line:
-```python
+```bash
 python -m keragan.trainer c:\dataset --size 1024 --model_path .\models --samples_path .\samples --latent_dim 100 --epochs 1000
 ```
 
@@ -36,7 +37,7 @@ Important things to note:
 
 Once you have trained the model, you can use the generator model to produce new random images. To do that from a command line, you can use the following:
 
-```python
+```bash
 python -m keragan.generate --file ./models/gen_1100.hdf5 --out ./samples --n 100
 ```
 
@@ -69,5 +70,4 @@ The actual training code looks like this:
             plt.show()
 
     train.train(callbk)
-
 ```
