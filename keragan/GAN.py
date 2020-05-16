@@ -20,7 +20,9 @@ class GAN():
         self.samples_path = samples_path
         self.init()
 
-    def __init__(self,args):
+    def __init__(self,args=None):
+        if args is None:
+            return
         self.width = args.width
         self.height = args.height
         self.channels = 3
@@ -31,9 +33,6 @@ class GAN():
         self.samples_path = args.samples_path
         self.lr = args.lr
         self.init()
-
-    def __init__(self):
-        pass
 
     def __figure_epoch(self):
         mx = -1
