@@ -49,7 +49,7 @@ class GAN():
     def init(self):
         if self.lr is None and self.optimizer is None:
             self.lr = 0.001
-        self.optimizer = keras.optimizers.Adam(lr=self.lr, beta_1=0.5, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False) if self.optimizer is None else self.optimizer
+        self.optimizer = keras.optimizers.Adam(lr=self.lr, beta_1=0.5, beta_2=0.999, epsilon=1e-7, decay=0.0, amsgrad=False) if self.optimizer is None else self.optimizer
 
         if self.model_path:
             os.makedirs(self.model_path,exist_ok=True)
