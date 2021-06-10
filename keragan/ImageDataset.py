@@ -20,15 +20,14 @@ class ImageDataset():
         self.limit = limit
         self.crop = crop
 
-    def __init__(self,args):
-        self.path = args.path
-        self.height = args.height
-        self.width = args.width
-        self.aspect_variance = args.aspect_variance
-        self.save_npy_path = args.save_npy_path
-        self.ignore_smaller = args.ignore_smaller
-        self.limit = args.limit
-        self.crop = args.crop
+    @staticmethod 
+    def from_args(args):
+        return ImageDataset(args.path,args.height,args.width,
+            args.aspect_variance,
+            args.save_npy_path,
+            args.ignore_smaller,
+            args.limit,
+            args.crop)
 
     def load(self):
 

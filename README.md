@@ -53,8 +53,8 @@ The library is structured around few core classes:
 
 The actual training code looks like this:
 ```python
-    gan = keragan.DCGAN(args)
-    imsrc = keragan.ImageDataset(args)
+    gan = keragan.DCGAN.from_args(args)
+    imsrc = keragan.ImageDataset.from_args(args)
     imsrc.load()
     if args.sample_images:
         imsrc.sample_images()

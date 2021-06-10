@@ -20,19 +20,16 @@ class GAN():
         self.samples_path = samples_path
         self.init()
 
-    def __init__(self,args=None):
-        if args is None:
-            return
-        self.width = args.width
-        self.height = args.height
-        self.channels = 3
-        self.img_shape = (self.height, self.width, self.channels)
-        self.model_path = args.model_path
-        self.optimizer = args.optimizer
-        self.latent_dim = args.latent_dim
-        self.samples_path = args.samples_path
-        self.lr = args.lr
-        self.init()
+    @classmethod
+    def from_args(cls,args):
+        return cls(
+            args.width,
+            args.height,
+            args.model_path,
+            args.samples_path,
+            args.optimizer,
+            args.lr,
+            args.latent_dim)
 
     def __figure_epoch(self):
         mx = -1

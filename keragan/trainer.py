@@ -35,8 +35,8 @@ if __name__ == '__main__':
     args.height = args.size
     args.width = args.size
     args.optimizer = None
-    gan = keragan.DCGAN(args)
-    imsrc = keragan.ImageDataset(args)
+    gan = keragan.DCGAN.from_args(args)
+    imsrc = keragan.ImageDataset.from_args(args)
     imsrc.load()
     if args.sample_images:
         imsrc.sample_images()
