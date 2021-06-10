@@ -96,10 +96,13 @@ class GAN():
         raise "Abstract GAN Class cannot be instantiated"
 
     def save(self):
-        self.discriminator.save(os.path.join(self.model_path,'dis_'+str(self.epoch)+'.h5'))
-        self.generator.save(os.path.join(self.model_path,'gen_'+str(self.epoch)+'.h5'))
+        if self.model_path:
+            self.discriminator.save(os.path.join(self.model_path,'dis_'+str(self.epoch)+'.h5'))
+            self.generator.save(os.path.join(self.model_path,'gen_'+str(self.epoch)+'.h5'))
 
     def load(self,epoch=None):
+        if not self.model_path:
+            return None
         if epoch is None:
             epoch = self.epoch
         self.discriminator = keras.models.load_model(os.path.join(self.model_path,'dis_'+str(epoch)+'.h5'))
