@@ -33,6 +33,8 @@ class GAN():
 
     def __figure_epoch(self):
         mx = -1
+        if not self.model_path:
+            return None
         for fn in glob.glob(os.path.join(self.model_path,'dis_*.h5')):
             n = os.path.basename(fn)
             n = int(n[4:-3])
